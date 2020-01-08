@@ -1,6 +1,6 @@
-package com.copinstagram.instagram.board.domain.dto;
+package com.copinstagram.instagram.board.model.dto;
 
-import com.copinstagram.instagram.board.domain.Board;
+import com.copinstagram.instagram.board.model.entity.Board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

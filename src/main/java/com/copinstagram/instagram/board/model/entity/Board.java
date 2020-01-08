@@ -1,4 +1,4 @@
-package com.copinstagram.instagram.board.domain;
+package com.copinstagram.instagram.board.model.entity;
 
 import lombok.*;
 
