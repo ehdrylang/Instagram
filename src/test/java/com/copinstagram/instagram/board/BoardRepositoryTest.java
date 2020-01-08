@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -22,18 +24,21 @@ public class BoardRepositoryTest {
         boardRepository.deleteAll();
     }
     @Test
-    public void whenSaveBoard_thenReadBoard(){
+    public void givenBoardEntityRepository_whenSaveAndRetreiveEntity_thenOK(){
         //given
-        boardRepository.save(Board.builder()
-                .content("hello world")
-                .author("jdk")
-                .build()
-        );
+        Board givenBoard = Board.builder()
+                .content("content")
+                .author("author")
+                .build();
         //when
-        List<Board> boardList =  boardRepository.findAll();
+        Board thenBoard = boardRepository.save(givenBoard);
+        Optional<Board> optReadBoard = boardRepository.findById(thenBoard.getId());
+        Board readBoard = optReadBoard.orElseGet(()->Board.builder()
+                .content("")
+                .author("")
+                .build());
         //then
-        Board board = boardList.get(0);
-        assertThat(board.getAuthor(), is("jdk"));
-        assertThat(board.getContent(), is("hello world"));
+        assertThat(readBoard.getAuthor(), is(givenBoard.getAuthor()));
+        assertThat(thenBoard.getContent(), is(givenBoard.getContent()));
     }
 }
