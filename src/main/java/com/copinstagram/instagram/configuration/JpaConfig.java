@@ -1,5 +1,6 @@
 package com.copinstagram.instagram.configuration;
 
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -22,9 +23,13 @@ public class JpaConfig {
     LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource, Environment environment){
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(dataSource);
-        entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(true);
+        vendorAdapter.setShowSql(true);
+        entityManagerFactory.setJpaVendorAdapter(vendorAdapter);
         entityManagerFactory.setPackagesToScan(new String[] { "com.copinstagram.instagram" });
         entityManagerFactory.setJpaProperties(additionalProperties());
+        entityManagerFactory.afterPropertiesSet();
         return entityManagerFactory;
     }
     @Bean
@@ -39,11 +44,9 @@ public class JpaConfig {
     }
     private Properties additionalProperties(){
         Properties properties = new Properties();
-        properties.setProperty("database-platform", "org.hibernate.dialect.MySQL5InnoDBDialect");
-        properties.setProperty("open-in-view", "false");
-        properties.setProperty("properties.hibernate.format_sql", "true");
-        properties.setProperty("generate-ddl","true");
-        properties.setProperty("hibernate.use-new-id-generator-mappings","false");
+        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+        properties.setProperty("format_sql","true");
         return properties;
     }
 }

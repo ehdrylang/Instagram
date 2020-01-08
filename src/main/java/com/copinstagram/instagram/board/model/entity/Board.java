@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @ToString
 public class Board {
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
