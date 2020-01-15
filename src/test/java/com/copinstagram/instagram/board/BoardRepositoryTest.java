@@ -1,25 +1,25 @@
 package com.copinstagram.instagram.board;
 
+import com.copinstagram.instagram.InstagramApplication;
+import com.copinstagram.instagram.board.exception.NotFoundBoardException;
 import com.copinstagram.instagram.board.model.entity.Board;
 import com.copinstagram.instagram.board.repository.BoardRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+//@DataJpaTest
 @SpringBootTest
-@DataJpaTest
 public class BoardRepositoryTest {
     @Autowired
     private BoardRepository boardRepository;
@@ -46,11 +46,11 @@ public class BoardRepositoryTest {
         assertThat(readBoard.getAuthor(), is(givenBoard.getAuthor()));
         assertThat(thenBoard.getContent(), is(givenBoard.getContent()));
     }
-//    @Test
-//    public void givenNotExistId_whenFindById_thenThrowException(){
-//        //given
-//        long id = new Random().nextLong();
-//        //when
-//        assertThrows(NotFoundEx,()->boardRepository.findById(id));
-//    }
+    @Test
+    public void givenIdIsNull_whenFindById_thenThrowIllegalArgumentException(){
+        //given
+        Long id = null;
+        //when, then
+        assertThrows(IllegalArgumentException.class, ()->boardRepository.findById(id));
+    }
 }
