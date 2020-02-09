@@ -9,7 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-public class Member extends BaseTimeEntity {
+public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +21,7 @@ public class Member extends BaseTimeEntity {
     private String password;
 
     @Builder
-    public Member(String email, String password) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
