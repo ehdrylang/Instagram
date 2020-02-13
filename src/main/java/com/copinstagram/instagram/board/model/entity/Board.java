@@ -1,5 +1,6 @@
 package com.copinstagram.instagram.board.model.entity;
 
+import com.copinstagram.instagram.board.model.dto.BoardUpdateRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -9,7 +10,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString
-public class Board {
+public class Board extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -22,5 +23,15 @@ public class Board {
     public Board(String content, String author){
         this.content = content;
         this.author = author;
+    }
+    /**
+     * description : jpa 업데이트를 위한 메서드로 setter 대신 사용한다.
+     * @param dto
+     * @return
+     */
+    public Board updateMyAccount(BoardUpdateRequestDto dto) {
+        this.content = dto.getContent();
+        this.author = dto.getAuthor();
+        return this;
     }
 }
