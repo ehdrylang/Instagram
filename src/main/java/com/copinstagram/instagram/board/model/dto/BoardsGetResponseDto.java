@@ -7,16 +7,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Getter
-public class BoardsMainResponseDto {
+public class BoardsGetResponseDto {
     private Long id;
     private String author;
     private String content;
     private String modifiedDate;
-    public BoardsMainResponseDto(Board entity){
+    private String createdDate;
+
+    public BoardsGetResponseDto(Board entity){
         this.id = entity.getId();
         this.author = entity.getAuthor();
         this.content = entity.getContent();
         this.modifiedDate = toStringDateTime(entity.getModifiedDate());
+        this.createdDate = toStringDateTime(entity.getCreatedDate());
     }
     private String toStringDateTime(LocalDateTime localDateTime){
         if(localDateTime == null){
