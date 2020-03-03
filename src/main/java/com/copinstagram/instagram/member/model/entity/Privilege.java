@@ -23,7 +23,7 @@ public class Privilege {
         this.name = name;
     }
 
-    @ManyToMany(mappedBy = "privileges")
-    private Collection<Role> roles = new ArrayList<>();
+    @ManyToOne
+    private RolesPrivileges rolesPrivileges;
 
 }
