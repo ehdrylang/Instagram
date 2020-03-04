@@ -6,12 +6,13 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @ToString(exclude = {"users", "privileges"})
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "id")
 public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,22 +22,22 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @Builder
-    public Role(String name, RolesPrivileges rolesPrivileges){
+    public Role(String name, Collection<Privilege> privileges){
         this.name = name;
-        this.rolesPrivileges = rolesPrivileges;
+        this.privileges = privileges;
     }
 
     @ManyToMany(mappedBy = "roles")
     private Collection<User> users = new ArrayList<>();
 
-    @ManyToOne
-    /*@JoinTable(
+    @ManyToMany
+    @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
-                    name = "privilege_id", referencedColumnName = "id"))*/
-    private RolesPrivileges rolesPrivileges;
+                    name = "privilege_id", referencedColumnName = "id"))
+    private Collection<Privilege> privileges;
 
     @Override
     public String getAuthority() {

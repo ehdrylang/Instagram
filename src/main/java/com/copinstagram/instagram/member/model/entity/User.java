@@ -4,17 +4,17 @@ import com.copinstagram.instagram.board.model.entity.BaseTimeEntity;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(exclude = "roles")
+@ToString(exclude = "authorities")
 public class User extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -24,11 +24,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(length = 100, nullable = false)
     @Size(min = 4)
     private String password;
-    /* details */
-    @Column
-    @Email
-    private String email;
-
 
     /* UserDetails attribute */
     @Column
@@ -41,11 +36,10 @@ public class User extends BaseTimeEntity implements UserDetails {
     private boolean enabled;
 
     @Builder
-    public User(String username, String password, Collection<Role> roles) {
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.username = username;
         this.password = password;
-        this.roles = roles;
-        this.roles.forEach(role->role.getUsers().add(this));
+        this.authorities = new HashSet<>(authorities);
         this.enabled = true;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
@@ -54,16 +48,14 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @ManyToMany
     @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(
-                name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(
-                name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles = new ArrayList<>();
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Set<GrantedAuthority> authorities = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return this.authorities;
     }
 
     @Override
