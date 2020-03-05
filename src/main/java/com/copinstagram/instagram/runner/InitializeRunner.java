@@ -30,7 +30,7 @@ public class InitializeRunner implements ApplicationListener<ContextRefreshedEve
         List<Privilege> adminPrivilege = Arrays.asList(readPrivilege, writePrivilege);
         Role memberRole = createRoleIfNotFound("ROLE_MEMBER", Arrays.asList(readPrivilege));
         Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivilege);
-        //adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow(RuntimeException::new);
+        adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow(RuntimeException::new);
         System.err.println(adminRole);
         User user = User.builder()
                 .username("admin@google.com")
@@ -45,7 +45,7 @@ public class InitializeRunner implements ApplicationListener<ContextRefreshedEve
         return privilege;
     }
 
-    private Role createRoleIfNotFound(String name, Collection<Privilege> privileges) {
+    private Role createRoleIfNotFound(String name, List<Privilege> privileges) {
         Role role = roleRepository.findByName(name).orElseGet(()->Role.builder().name(name).privileges(privileges).build());
         roleRepository.save(role);
         return role;

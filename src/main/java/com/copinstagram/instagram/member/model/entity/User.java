@@ -1,6 +1,8 @@
 package com.copinstagram.instagram.member.model.entity;
 
+import com.copinstagram.instagram.board.model.dto.BoardUpdateRequestDto;
 import com.copinstagram.instagram.board.model.entity.BaseTimeEntity;
+import com.copinstagram.instagram.board.model.entity.Board;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,10 +38,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     private boolean enabled;
 
     @Builder
-    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public User(String username, String password, Collection<Role> authorities) {
         this.username = username;
         this.password = password;
-        this.authorities = new HashSet<>(authorities);
+        if(null != authorities){
+            this.authorities = new ArrayList<>(authorities);
+        }
         this.enabled = true;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
@@ -51,7 +55,7 @@ public class User extends BaseTimeEntity implements UserDetails {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private Set<GrantedAuthority> authorities = new HashSet<>();
+    private Collection<Role> authorities = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -81,5 +85,15 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    /**
+     * description : jpa 업데이트를 위한 메서드로 setter 대신 사용한다.
+     * @param authorities
+     * @return
+     */
+    public User addAuthorities(Collection<Role> authorities) {
+        this.authorities = authorities;
+        return this;
     }
 }
