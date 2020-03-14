@@ -1,20 +1,22 @@
 package com.copinstagram.instagram.member.model.entity;
 
+import com.copinstagram.instagram.board.model.dto.BoardUpdateRequestDto;
 import com.copinstagram.instagram.board.model.entity.BaseTimeEntity;
+import com.copinstagram.instagram.board.model.entity.Board;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@ToString(exclude = "roles")
+@ToString(exclude = "authorities")
 public class User extends BaseTimeEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -24,11 +26,6 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(length = 100, nullable = false)
     @Size(min = 4)
     private String password;
-    /* details */
-    @Column
-    @Email
-    private String email;
-
 
     /* UserDetails attribute */
     @Column
@@ -41,11 +38,12 @@ public class User extends BaseTimeEntity implements UserDetails {
     private boolean enabled;
 
     @Builder
-    public User(String username, String password, Collection<Role> roles) {
+    public User(String username, String password, Collection<Role> authorities) {
         this.username = username;
         this.password = password;
-        this.roles = roles;
-        this.roles.forEach(role->role.getUsers().add(this));
+        if(null != authorities){
+            this.authorities = new ArrayList<>(authorities);
+        }
         this.enabled = true;
         this.accountNonExpired = true;
         this.accountNonLocked = true;
@@ -54,16 +52,14 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @ManyToMany
     @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(
-                name = "user_id", referencedColumnName = "id"),
-        inverseJoinColumns = @JoinColumn(
-                name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles = new ArrayList<>();
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> authorities = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles;
+        return this.authorities;
     }
 
     @Override
@@ -89,5 +85,15 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    /**
+     * description : jpa 업데이트를 위한 메서드로 setter 대신 사용한다.
+     * @param authorities
+     * @return
+     */
+    public User addAuthorities(Collection<Role> authorities) {
+        this.authorities = authorities;
+        return this;
     }
 }

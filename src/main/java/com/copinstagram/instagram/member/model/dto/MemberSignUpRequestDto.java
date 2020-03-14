@@ -7,20 +7,21 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class MemberDto {
-    private String email;
+public class MemberSignUpRequestDto {
+    private String username;
     private String password;
 
     public User toEntity(){
         return User.builder()
-                .email(email)
+                .username(username)
                 .password(password)
+                .authorities(null)
                 .build();
     }
 
     @Builder
-    public MemberDto(String email, String password) {
-        this.email = email;
+    public MemberSignUpRequestDto(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 }
