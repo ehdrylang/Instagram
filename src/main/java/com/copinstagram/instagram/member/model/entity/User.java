@@ -1,17 +1,14 @@
 package com.copinstagram.instagram.member.model.entity;
 
-import com.copinstagram.instagram.board.model.dto.BoardUpdateRequestDto;
 import com.copinstagram.instagram.board.model.entity.BaseTimeEntity;
-import com.copinstagram.instagram.board.model.entity.Board;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.Assert;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
