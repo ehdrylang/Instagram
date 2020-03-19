@@ -13,7 +13,12 @@ spring:
     cache: false #개발중에 수정하면서 확인하는 용도로 캐시되지 않게 설정
   profiles:
     active: local # 기본 환경 선택
-
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  session:
+    store-type: REDIS
+    timeout: 3600
 # local 환경
 ---
 spring:
