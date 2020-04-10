@@ -10,4 +10,6 @@
 - redis
 - kafka
 - Spring security
-- OAuth2.0(google로 테스트 2020-03-20 테스트 시작)
+- OAuth2.0
+
+(이직준비로 인한 2020-04-10 중지)
